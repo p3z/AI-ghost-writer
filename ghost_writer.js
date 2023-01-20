@@ -12,7 +12,8 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 
 app.get('/', (req, res) => {
-  res.send("Ghost writer prototype root")
+  //res.send("Ghost writer prototype root")
+  res.sendFile(__dirname + '/index.html');
 });
 
 
