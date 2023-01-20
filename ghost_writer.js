@@ -16,6 +16,10 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
+app.get('/test', (req, res) => {
+  res.send("Simple test route")
+});
+
 
 app.post('/writer/book/:qty/:content_type', async (req, res) => {
 
