@@ -11,10 +11,6 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
-app.get('/', (req,res)=>{
-  res.send("Ghost writer prototype")
-})
-
 
 app.post('/book/:qty/:content_type', async (req, res) => {
 
@@ -59,7 +55,14 @@ app.post('/book/:qty/:content_type', async (req, res) => {
   res.send({ answer });
 });
 
+app.get('*', (req, res) => {
+  //res.status(404).send('404 Not Found');
+  res.send("Ghost writer prototype")
+});
+
+
 // Listen for requests
-app.listen(3001, function() {
-	console.log('Server is listening on port 3001');
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
 });
