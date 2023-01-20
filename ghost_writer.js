@@ -11,30 +11,24 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
+app.get('/', (req,res)=>{
+  res.send("Ghost writer prototype")
+})
+
+
 app.post('/book/:qty/:content_type', async (req, res) => {
 
-  let { qty = 1, content_type } = req.params;
+  let { qty = 1, content_type = "" } = req.params;
+  let user_args = JSON.stringify(req.query); 
+  // Current potential params: sentiment, length, genre, summary
 
   let acceptable_params = [
     'title', 'page', 'prologue', 'epilogue', 'blurb', 'tagline', 'summary', 'review',
   ]
 
-  if(!acceptable_params.includes(content_type)){
-    //console.log("Not acceptable");
-    // Prevent arbitrary inputs
-    res.send({ error: "Not acceptable input" });
+  if(!acceptable_params.includes(content_type) || content_type == ""){   
+    res.send({ error: "Not acceptable input" });  // Prevent arbitrary inputs
   }
-  
-
-  // let { 
-  //   sentiment,
-  //   length,
-  //   genre,
-  //   summary
-  // } = req.query;
-
-  let user_args = JSON.stringify(req.query);
-  //console.log(user_args)
 
   let handle_plural_types = (qty == 1) ? content_type : content_type + "s"; // Dont worry about spelling errors, gpt is pretty much smart enough to know what you meant
 
