@@ -19,6 +19,8 @@ app.get('/', (req, res) => {
 
 app.post('/book/:qty/:content_type', async (req, res) => {
 
+  console.log("Post route visited")
+
   let { qty = 1, content_type = "" } = req.params;
   let user_args = JSON.stringify(req.query); 
   // Current potential params: sentiment, length, genre, summary

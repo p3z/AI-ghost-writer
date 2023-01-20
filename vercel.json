@@ -1,0 +1,13 @@
+{
+    "version": 2,
+    "builds": [
+      {
+        "src": "ghost_writer.js",
+        "use": "@vercel/node",
+        "config": {
+          "basePath": "/"
+        }
+      }
+    ]
+  }
+  
