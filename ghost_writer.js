@@ -11,6 +11,10 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
+app.get('/', (req, res) => {
+  res.send("Ghost writer prototype root")
+});
+
 
 app.post('/book/:qty/:content_type', async (req, res) => {
 
