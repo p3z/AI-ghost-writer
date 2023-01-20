@@ -1,11 +1,45 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Ghost writer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GhostWriter v1</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" integrity="sha384-G5gwV9U9S/u/2u8cXvUw5kGxd5W5p5g5n5z4Vh5B4KxJv7Q/5Ww/5Y5j+S5Y5j+S5Y5j+S" crossorigin="anonymous">
 </head>
 <body>
-  <h1>Root route</h1>
-  <p>This is my webpage.</p>
+    <form>
+        <div class="form-group">
+          <label for="selectInput">Select Input</label>
+          <select class="form-control" id="selectInput" name="selectInput">
+            <option>title</option>
+            <option>page</option>
+            <option>prologue</option>
+            <option>epilogue</option>
+            <option>blurb</option>
+            <option>tagline</option>
+            <option>summary</option>
+            <option>review</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="sentimentInput">Sentiment</label>
+          <input type="text" class="form-control" id="sentimentInput" name="sentiment">
+        </div>
+        <div class="form-group">
+          <label for="lengthInput">Length</label>
+          <input type="text" class="form-control" id="lengthInput" name="length">
+        </div>
+        <div class="form-group">
+          <label for="genreInput">Genre</label>
+          <input type="text" class="form-control" id="genreInput" name="genre">
+        </div>
+        <div class="form-group">
+          <label for="summaryInput">Summary</label>
+          <textarea class="form-control" id="summaryInput" rows="3" name="summary"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+      
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.min.js" integrity="sha384-tC5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </body>
 </html>
