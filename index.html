@@ -5,41 +5,216 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GhostWriter v1</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" integrity="sha384-G5gwV9U9S/u/2u8cXvUw5kGxd5W5p5g5n5z4Vh5B4KxJv7Q/5Ww/5Y5j+S5Y5j+S5Y5j+S" crossorigin="anonymous">
+  <style>
+
+    *{
+        margin: 0;
+        padding: 0;
+    }
+
+    .pws-gradient-animation {
+                    
+        background: linear-gradient(
+            -45deg,
+            /*Kaweb colours from site*/
+            rgba(15,32,39, 0.95),
+            rgba(32,58,67, 0.95),
+            rgba(44,83,100, 0.95)
+        );
+        
+        background-size: 400% 400%;
+        animation: pws_gradient 15s ease infinite;
+        
+        
+    }
+    @keyframes pws_gradient {
+        0% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+    
+    
+    main{
+        display: flex;
+    }
+    
+    .l-col{
+        padding: 50px 15px;
+        height: 100vh;
+        min-width: 30%;
+    }
+    
+    .r-col{
+        height: 100vh;
+        min-width: 70%;
+        padding: 50px;
+    }    
+    
+    form {
+        margin: 0 auto;
+        max-width: 500px;
+        padding: 30px;
+        background-color: #f5f5f5;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px #ccc;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* center form elements vertically */
+    }
+
+    .form-group {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center; /* center form elements vertically */
+        margin-bottom: 20px;
+    }
+
+    label {
+        font-weight: bold;
+        width: 100px; /* fix label width to 100px */
+    }
+
+    input, select, textarea {
+        padding: 12px;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        box-shadow: 0px 0px 5px #ddd;
+        font-size: 14px;
+        flex: 1; /* adjust input width to fill remaining space */
+    }
+
+    input:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: #66afe9;
+        box-shadow: 0px 0px 5px #66afe9;
+    }
+
+    button[type="submit"] {
+        background-color: #007bff;
+        color: #fff;
+        padding: 12px 20px;
+        border-radius: 4px;
+        border: none;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.2s ease-in-out;
+        align-self: flex-end; /* this will align the submit button to the end of the form */
+    }
+
+    button[type="submit"]:hover {
+        background-color: #0069d9;
+    }
+
+    button[type="submit"]:active {
+        background-color: #0062cc;
+    }
+    
+    .response_display{
+        height: 75%;
+        width: 75%;
+        padding: 50px;
+        background: rgba(255,255,255,0.8);
+        overflow: auto;
+    }
+  </style>
+  
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 </head>
-<body>
-    <form>
-        <div class="form-group">
-          <label for="selectInput">Select Input</label>
-          <select class="form-control" id="selectInput" name="selectInput">
-            <option>title</option>
-            <option>page</option>
-            <option>prologue</option>
-            <option>epilogue</option>
-            <option>blurb</option>
-            <option>tagline</option>
-            <option>summary</option>
-            <option>review</option>
-          </select>
+<body class="hexi-pattern">
+    <main class=" pws-gradient-animation">
+
+        <div class="l-col">
+            <form>
+         
+                <div class="form-group">       
+                  <label for="content_type">Select Input</label>
+                  <select class="form-control" id="content_type" name="content_type">
+                    <option>title</option>
+                    <option>page</option>
+                    <option>prologue</option>
+                    <option>epilogue</option>
+                    <option>blurb</option>
+                    <option>tagline</option>
+                    <option>summary</option>
+                    <option>review</option>
+                  </select>
+                </div>
+        
+                <div class="form-group">
+                    <label for="outputQty">Qty</label>
+                    <input type="text" class="form-control" id="outputQty" name="qty">
+                </div>
+        
+                <div class="form-group">
+                  <label for="sentimentInput">Sentiment</label>
+                  <input type="text" class="form-control" id="sentimentInput" name="sentiment">
+                </div>
+                <div class="form-group">
+                  <label for="lengthInput">Length</label>
+                  <input type="text" class="form-control" id="lengthInput" name="length">
+                </div>
+                <div class="form-group">
+                  <label for="genreInput">Genre</label>
+                  <input type="text" class="form-control" id="genreInput" name="genre">
+                </div>
+                <div class="form-group">
+                  <label for="summaryInput">Summary</label>
+                  <textarea class="form-control" id="summaryInput" rows="3" name="summary"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
         </div>
-        <div class="form-group">
-          <label for="sentimentInput">Sentiment</label>
-          <input type="text" class="form-control" id="sentimentInput" name="sentiment">
+        <div class="r-col">
+            <div class="response_display">
+
+            </div>
         </div>
-        <div class="form-group">
-          <label for="lengthInput">Length</label>
-          <input type="text" class="form-control" id="lengthInput" name="length">
-        </div>
-        <div class="form-group">
-          <label for="genreInput">Genre</label>
-          <input type="text" class="form-control" id="genreInput" name="genre">
-        </div>
-        <div class="form-group">
-          <label for="summaryInput">Summary</label>
-          <textarea class="form-control" id="summaryInput" rows="3" name="summary"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-      </form>
+
+    
+
+    </main>
+    
       
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.min.js" integrity="sha384-tC5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <script>
+    
+    const form = document.querySelector('form');
+    const response_display = document.querySelector('.response_display');
+    const formData = {};
+
+    form.addEventListener('submit', event => {
+        event.preventDefault();        
+        const formElements = form.elements;
+
+        // Iterate through the form elements and add them to the formData object
+        for (const element of formElements) {
+            if (element.name) {
+                formData[element.name] = element.value;
+            }
+        }
+
+        console.log("formData:")
+        console.log(formData)
+        
+        axios.post('/writer', formData)
+            .then(response => {
+                response_display.innerHTML = response.data.answer
+                console.log(response.data);
+            })
+            .catch(error => {
+                console.log(error);
+        });
+
+        //console.log(formData);
+    });
+
+  </script>
 </body>
 </html>

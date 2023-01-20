@@ -4,6 +4,9 @@ require('dotenv').config();
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
+//app.use('/styles', express.static(__dirname + '/public'));
+
+
 const { Configuration, OpenAIApi } = require("openai");
 const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
@@ -21,28 +24,51 @@ app.get('/test', (req, res) => {
 });
 
 
-app.post('/writer/book/:qty/:content_type', async (req, res) => {
+app.post('/writer', async (req, res) => {
+  
+  let response_obj = {};
+  let user_data = req.body;
 
-  console.log("Post route visited")
-
-  let { qty = 1, content_type = "" } = req.params;
-  let user_args = JSON.stringify(req.query); 
+  
   // Current potential params: sentiment, length, genre, summary
+
+  //TODO: ADD A WAY TO ENSURE THAT IF THERE IS MISSING INPUT THEN FORM WILL STILL WORK
 
   let acceptable_params = [
     'title', 'page', 'prologue', 'epilogue', 'blurb', 'tagline', 'summary', 'review',
   ]
 
-  if(!acceptable_params.includes(content_type) || content_type == ""){   
+  if(!acceptable_params.includes(user_data.content_type) ||user_data.content_type == ""){   
     res.send({ error: "Not acceptable input" });  // Prevent arbitrary inputs
   }
 
-  let handle_plural_types = (qty == 1) ? content_type : content_type + "s"; // Dont worry about spelling errors, gpt is pretty much smart enough to know what you meant
+  let handle_plural_types = (user_data.qty == 1) ? user_data.content_type : user_data.content_type + "s"; // Dont worry about spelling errors, gpt is pretty much smart enough to know what you meant  
 
-  let prompt_body = `Using the information expressed in the following json object, generate ${qty} creative ${handle_plural_types} for a book. They should all be completely different\n ${user_args}`;
+  response_obj.qty = user_data.qty;
+  response_obj.content_type = user_data.content_type;
+  response_obj.sentiment = user_data.sentiment;
+  response_obj.length = user_data.length;
+  response_obj.genre = user_data.genre;
+  response_obj.summary = user_data.summary;
 
-  // console.log("Generated prompt body")
-  // console.log(prompt_body)
+  let prompt_body = `Using the information expressed in the following json object, generate ${user_data.qty} creative ${handle_plural_types} for a book. They should all be completely different. Return the data as an html ordered list:\n`;
+  
+  // Reduce the user_data object down to the data that will be used to construct the body content
+  const excludedKeys = ['qty', 'content_type'];
+  
+  let new_req_obj = {};
+  
+  Object.keys(user_data).forEach((key, i) => {
+    let orig_val = Object.values(user_data)[i];
+
+    if( !excludedKeys.includes(key)){
+      new_req_obj[key] = orig_val;
+    }    
+    
+  });
+
+  prompt_body += JSON.stringify(new_req_obj);
+  
   
     
   let args = {
@@ -60,10 +86,14 @@ app.post('/writer/book/:qty/:content_type', async (req, res) => {
   const response = await openai.createCompletion(args);
   const answer = response.data.choices[0].text;
 
-  console.log("All available options:")
- // console.log(response.data.choices)
+  // Now parse the returned payload
 
-  res.send({ answer });
+
+
+  response_obj.answer = answer;
+
+  res.send( response_obj );
+  
 });
 
 app.get('*', (req, res) => {
