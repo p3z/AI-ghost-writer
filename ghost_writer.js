@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
 });
 
 
-app.post('/book/:qty/:content_type', async (req, res) => {
+app.post('/writer/book/:qty/:content_type', async (req, res) => {
 
   console.log("Post route visited")
 
@@ -64,7 +64,7 @@ app.post('/book/:qty/:content_type', async (req, res) => {
 
 app.get('*', (req, res) => {
   //res.status(404).send('404 Not Found');
-  res.send("Ghost writer prototype")
+  res.send("Ghost writer prototype (Catch all)")
 });
 
 
