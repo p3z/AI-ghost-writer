@@ -29,39 +29,32 @@ app.post('/writer', async (req, res) => {
   let response_obj = {};
   let user_data = req.body;
 
-  
-  // Current potential params: sentiment, length, genre, summary
-
-  //TODO: ADD A WAY TO ENSURE THAT IF THERE IS MISSING INPUT THEN FORM WILL STILL WORK
-
+  // Ensure users cant repurpose form
   let acceptable_params = [
     'title', 'page', 'prologue', 'epilogue', 'blurb', 'tagline', 'summary', 'review',
   ]
 
-  if(!acceptable_params.includes(user_data.content_type) ||user_data.content_type == ""){   
+  if(!acceptable_params.includes(user_data.content_type)){   
     res.send({ error: "Not acceptable input" });  // Prevent arbitrary inputs
   }
 
-  let handle_plural_types = (user_data.qty == 1) ? user_data.content_type : user_data.content_type + "s"; // Dont worry about spelling errors, gpt is pretty much smart enough to know what you meant  
+  let is_plural = (user_data.qty > 1);
 
+  // Add user settings to response object for troubleshooting
   response_obj.qty = user_data.qty;
   response_obj.content_type = user_data.content_type;
-  response_obj.sentiment = user_data.sentiment;
-  response_obj.length = user_data.length;
-  response_obj.genre = user_data.genre;
-  response_obj.summary = user_data.summary;
+  
 
-  let prompt_body = `Using the information expressed in the following json object, generate ${user_data.qty} creative ${handle_plural_types} for a book. They should all be completely different. Return the data as an html ordered list:\n`;
+  let prompt_body = `Using the information expressed in the following json object, generate ${user_data.qty} creative ${user_data.content_type}${(is_plural) ? "s" : ""} for a book. ${(is_plural) ? "They should all be completely different. " : ""}Return the data as an html ordered list:\n`;
   
   // Reduce the user_data object down to the data that will be used to construct the body content
-  const excludedKeys = ['qty', 'content_type'];
-  
-  let new_req_obj = {};
+  const excludedKeys = ['qty', 'content_type'];  
+  let new_req_obj = {}; // A copy of the request object with any excludedKeys removed
   
   Object.keys(user_data).forEach((key, i) => {
     let orig_val = Object.values(user_data)[i];
 
-    if( !excludedKeys.includes(key)){
+    if( !excludedKeys.includes(key) && orig_val != ""){
       new_req_obj[key] = orig_val;
     }    
     
@@ -70,7 +63,7 @@ app.post('/writer', async (req, res) => {
   prompt_body += JSON.stringify(new_req_obj);
   
   
-    
+  // Now submit the request to openAI
   let args = {
       model: "text-davinci-003",  
       //prompt: "Say hello", // This is just a test line in case something goes wrong with the line below
@@ -87,10 +80,15 @@ app.post('/writer', async (req, res) => {
   const answer = response.data.choices[0].text;
 
   // Now parse the returned payload
+  console.log("User IP:")
+  console.log(req.ip)
+  console.log(req.connection.remoteAddress)
 
 
 
   response_obj.answer = answer;
+  response_obj.json_request = new_req_obj;
+  response_obj.prompt_body = prompt_body;
 
   res.send( response_obj );
   
@@ -98,7 +96,7 @@ app.post('/writer', async (req, res) => {
 
 app.get('*', (req, res) => {
   //res.status(404).send('404 Not Found');
-  res.send("Ghost writer prototype (Catch all)")
+  res.send("Not a valid GhostWriter route")
 });
 
 
