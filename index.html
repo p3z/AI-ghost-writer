@@ -137,7 +137,7 @@
                   <label for="content_type">Select Input</label>
                   <select class="form-control" id="content_type" name="content_type">
                     <option>title</option>
-                    <option>page</option>
+                    <option>chapter</option>
                     <option>prologue</option>
                     <option>epilogue</option>
                     <option>blurb</option>
@@ -151,23 +151,26 @@
                     <label for="outputQty">Qty</label>
                     <input type="number" step="1" min="1" class="form-control" id="outputQty" name="qty" value="1">
                 </div>
+
+                <div class="form-group">
+                    <label for="style_input">Style</label>
+                    <input type="text" class="form-control" id="style_input" name="style">
+                  </div>
         
                 <div class="form-group">
                   <label for="sentimentInput">Sentiment</label>
                   <input type="text" class="form-control" id="sentimentInput" name="sentiment">
                 </div>
+
                 <div class="form-group">
-                  <label for="lengthInput">Length</label>
-                  <input type="text" class="form-control" id="lengthInput" name="length">
+                  <label for="topics_input">Topics</label>
+                  <textarea class="form-control" id="topics_input" rows="3" name="topics"></textarea>
                 </div>
+
                 <div class="form-group">
-                  <label for="genreInput">Genre</label>
-                  <input type="text" class="form-control" id="genreInput" name="genre">
-                </div>
-                <div class="form-group">
-                  <label for="summaryInput">Summary</label>
-                  <textarea class="form-control" id="summaryInput" rows="3" name="summary"></textarea>
-                </div>
+                    <label for="audience_input">Audience</label>
+                    <input type="text" class="form-control" id="audience_input" name="audience">
+                  </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
         </div>
