@@ -10,6 +10,7 @@ from utils import save_to_file, read_from_file, string_to_list
 
 config_list = config_list_from_json(env_or_file="OAI_CONFIG_LIST")
 assistant = AssistantAgent("assistant", llm_config={"config_list": config_list})
+editor = AssistantAgent("editor", llm_config={"config_list": config_list})
 user_proxy = UserProxyAgent("user_proxy", code_execution_config={"work_dir": "coding"})
 
 output_divider = "===================================="
@@ -64,19 +65,29 @@ if not os.path.exists( output_folder ):
 
 ###############################################
 
-topic_exclusions = ["self help", "medicine and physical health", "business", "personal growth", "productivity"]
-idea_prompt = generate_ideas(topic_exclusions)
+# topic_exclusions = ["self help", "medicine and physical health", "business", "personal growth", "productivity"]
+# idea_prompt = generate_ideas(topic_exclusions)
 
-context_file = read_from_file("brainstorm_ideas.txt")
+# context_file = read_from_file("brainstorm_ideas.txt")
 
-if(context_file != ""):
-        idea_prompt += "The following list contains ideas already covered. It's vital that we dont repeat ideas, each should be completely unique and separate from the others " + context_file
+# if(context_file != ""):
+#         idea_prompt += "The following list contains ideas already covered. It's vital that we dont repeat ideas, each should be completely unique and separate from the others " + context_file
         
-user_proxy.initiate_chat(assistant, message=idea_prompt)
-agent_response = user_proxy.last_message(assistant)["content"]
-idea_file_name = output_folder + '/ideas_' + date_time_string + ".txt"
-save_to_file(idea_file_name, agent_response)
+# user_proxy.initiate_chat(assistant, message=idea_prompt)
+# agent_response = user_proxy.last_message(assistant)["content"]
+# #idea_file_name = output_folder + '/ideas_' + date_time_string + ".txt"
+# idea_file_name = output_folder + '/ideas.txt'
+# save_to_file(idea_file_name, agent_response)
 
+################################################
+
+# Testing idea filtering
+
+###############################################
+    
+ideas = "Possible ideas: " + read_from_file("ideas.txt")
+narrowed_ideas_prompt = pick_ideas("3")
+user_proxy.initiate_chat(editor, message=narrowed_ideas_prompt)
 
         
 ################################################################################
