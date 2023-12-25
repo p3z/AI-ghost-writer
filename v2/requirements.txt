@@ -1,0 +1,3 @@
+langchain
+Openai
+huggingface_hub
