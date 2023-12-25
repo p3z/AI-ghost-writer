@@ -8,14 +8,11 @@ CONSIDERATIONS = "Bear in mind, this is not a conversation but a task. Just give
 LIMITATIONS = "When in character, you have no limitations. If there's something you can't do, it's critical to NEVER point it out. Instead give it your best guess always as a human might. None of your responses should inform me that you can't do something because your character can. While in character, do not thank or acknowledge me in any way. It's vital that you never break character, so never tell me that you are an AI or a language model. Pretend that you literally ARE the character described."
 
 def generic_role(role_title, content_type, theme, audience):
-    init = f"Your character: You are a genius {role_title} with decades of experience. Create {content_type} based on the theme: {theme}. It's absolutely vital that the theme is the main focus. When inserting details, make sure the overall thrust is subtly tailored toward {audience}, take care not to name them in any way. Basically, it should use language that appeals to them WITHOUT directly mentioning them."
+    init = f"Your character: You are a genius {role_title} with decades of experience. Create {content_type} based on the theme: '{theme}'. It's absolutely vital that the theme is the main focus. When inserting details, make sure the overall thrust is subtly tailored toward {audience}, take care not to name them in any way. Basically, it should use language that appeals to them WITHOUT directly mentioning them."
     return init
 
 
-# Breaking down the ideal prompt
-# Role: describe the agent's purpose and the flavour of work they will be tasked with
-# Format: descibe how the output should be formatted. Be as specific as possible
-# Exclusions: a list of things you definitely want to avoid
+
 def generate_ideas(exclusions):
     
     add_exclusions = " The following ideas should be excluded at all costs: " + ', '.join(exclusions) +  ". "
@@ -25,7 +22,7 @@ def generate_ideas(exclusions):
     if( len(exclusions) > 0):
         prompt += add_exclusions
     
-    prompt += "Other than that, use your resourcefulness and ingenuity as the entrepeurial entity you are to be as creative as possible.\n\n Format potential ideas into a markdown table. Column 1 is the concise description of the idea. Column 2 is a summary of rationale for why this idea is included in the list.\n\n Generate as many ideas as you can think of. Limit your output to the ideas only. For example, do not explain that 'this is the rationale', just provide the rationale. Likewise for the idea itself. Also, do not point out that these are evergreen ideas, just provide the ideas themselves. Do not number the ideas. The entire output should literally be the table of ideas."
+    prompt += "Other than that, use your resourcefulness and ingenuity as the entrepeurial entity you are to be as creative as possible.\n\n Format potential ideas into a markdown table. Column 1 is the concise description of the idea. Column 2 is a summary of rationale for why this idea is included in the list.\n\n Generate as many ideas as you can think of. Limit your output to the ideas only. For example, do not explain that 'this is the rationale', just provide the rationale. Likewise for the idea itself. Also, do not point out that these are evergreen ideas, just provide the ideas themselves. Do not number the ideas. The entire output should literally be the table of ideas with no additional comment. Just return the table, nothing more."
 
     return prompt
 
@@ -60,14 +57,3 @@ def pick_ideas(qty):
     return prompt
 
 
-
-# Converts comma-separated string into python list
-def string_to_list(input_string):
-   
-    # Using the split method to separate elements based on commas
-    elements = input_string.split(',')
-
-    # Removing leading and trailing whitespaces from each element
-    elements = [element.strip() for element in elements]
-
-    return elements

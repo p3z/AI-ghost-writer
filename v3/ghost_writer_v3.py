@@ -1,10 +1,23 @@
+import os
+from datetime import datetime
+current_datetime = datetime.now()
+date_time_string = current_datetime.strftime("%Y-%m-%d-%H_%M_%S")
+
 from autogen import AssistantAgent, UserProxyAgent, config_list_from_json
-from v2_fns import generic_role, generate_ideas, pick_ideas, generate_titles, generate_bookends, string_to_list
-from utils import save_to_file, read_from_file
+from v2_fns import generic_role, generate_ideas, pick_ideas, generate_titles, generate_bookends
+from utils import save_to_file, read_from_file, string_to_list
+
 
 config_list = config_list_from_json(env_or_file="OAI_CONFIG_LIST")
 assistant = AssistantAgent("assistant", llm_config={"config_list": config_list})
 user_proxy = UserProxyAgent("user_proxy", code_execution_config={"work_dir": "coding"})
+
+output_divider = "===================================="
+output_folder = "ghost_writer_output"
+
+# Create the folder if it doesn't exist
+if not os.path.exists( output_folder ):
+    os.makedirs( output_folder ) 
 
 ################################################################################
 
@@ -43,10 +56,36 @@ user_proxy = UserProxyAgent("user_proxy", code_execution_config={"work_dir": "co
 
 
 ################################################################################
-role_title="author"
-theme = ""
-content_type = ""
-audience = ""
 
-ghost_writer_prompt = generic_role(role_title, content_type, theme, audience)
-user_proxy.initiate_chat(assistant, message=ghost_writer_prompt)
+
+################################################
+
+# Testing idea generation
+
+###############################################
+
+topic_exclusions = ["self help", "medicine and physical health", "business", "personal growth", "productivity"]
+idea_prompt = generate_ideas(topic_exclusions)
+
+context_file = read_from_file("brainstorm_ideas.txt")
+
+if(context_file != ""):
+        idea_prompt += "The following list contains ideas already covered. It's vital that we dont repeat ideas, each should be completely unique and separate from the others " + context_file
+        
+user_proxy.initiate_chat(assistant, message=idea_prompt)
+agent_response = user_proxy.last_message(assistant)["content"]
+idea_file_name = output_folder + '/ideas_' + date_time_string + ".txt"
+save_to_file(idea_file_name, agent_response)
+
+
+        
+################################################################################
+# TEST CASE FOR BOOK OUTLINE        
+# role_title="author"
+# theme = "the psychology of design principles"
+# content_type = "a comprehensive book outline"
+# audience = "gen z authors"
+# book_outline_prompt = generic_role(role_title, content_type, theme, audience)
+        
+
+#print(idea_prompt)
