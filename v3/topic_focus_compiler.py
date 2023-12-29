@@ -3,12 +3,11 @@ from datetime import datetime
 current_datetime = datetime.now()
 date_time_string = current_datetime.strftime("%Y-%m-%d-%H_%M_%S")
 
-from autogen import AssistantAgent, UserProxyAgent, config_list_from_json
+from autogen import AssistantAgent, UserProxyAgent, GroupChat, GroupChatManager, config_list_from_json
 from utils import save_to_file, read_from_file, string_to_list
 
 config_list = config_list_from_json(env_or_file="OAI_CONFIG_LIST")
-assistant = AssistantAgent("assistant", llm_config={"config_list": config_list})
-user_proxy = UserProxyAgent("user_proxy", code_execution_config={"work_dir": "coding"})
+llm_config={"config_list": config_list}
 
 output_divider = "===================================="
 output_folder = "ghost_writer_output"
@@ -45,16 +44,43 @@ chosen_topic = "Exploring the world of virtual reality gaming"
 compiler_instance = Topic_focus_compiler(target_audience, spoken_voice, content_purpose, exceptions)
 
 # Prepare the prompts
-idea_prompt = compiler_instance.brainstorm_ideas()
 
-idea_list = read_from_file(output_folder + '/ideas.txt')
-select_ideas_prompt = compiler_instance.topic_finaliser(idea_list=idea_list) # defaults to top 3 ideas
 
-focus_prompt = compiler_instance.focus_generator(selected_topic="chosen_topic")
+# focus_prompt = compiler_instance.focus_generator(selected_topic=chosen_topic)
+
+# init autogen agents
+# user_proxy = UserProxyAgent("user_proxy", code_execution_config={"work_dir": "coding"})
+user_proxy = UserProxyAgent(
+   name="user_proxy",
+   code_execution_config={"last_n_messages": 2, "work_dir": "groupchat"},
+   human_input_mode="TERMINATE"
+)
+
+idea_consultant = AssistantAgent(
+    name="idea_consultant",
+    system_message=compiler_instance.brainstorm_ideas(),
+    llm_config=llm_config
+)
+
+# idea_list = read_from_file(output_folder + '/ideas.txt')
+# select_ideas_prompt = compiler_instance.topic_finaliser(idea_list=idea_list) # defaults to top 3 ideas
+
+idea_selector = AssistantAgent(
+    name="idea_selector",
+    system_message="Picking the top 3 ideas.",
+    llm_config=llm_config
+)
+
 
 # Sent to autogen
-user_proxy.initiate_chat(assistant, message=select_ideas_prompt)
-agent_response = user_proxy.last_message(assistant)["content"]
-#idea_file_name = output_folder + '/ideas_' + date_time_string + ".txt"
-idea_file_name = output_folder + '/ideas.txt'
-save_to_file(idea_file_name, agent_response)
+groupchat = GroupChat(agents=[user_proxy, idea_consultant, idea_selector], messages=[], max_round=12)
+manager = GroupChatManager(groupchat=groupchat, llm_config=llm_config)
+user_proxy.initiate_chat(manager, message="Generate some ideas.")
+
+
+
+# user_proxy.initiate_chat(assistant, message=idea_prompt)
+# agent_response = user_proxy.last_message(assistant)["content"]
+# #idea_file_name = output_folder + '/ideas_' + date_time_string + ".txt"
+# idea_file_name = output_folder + '/ideas.txt'
+# save_to_file(idea_file_name, agent_response)
