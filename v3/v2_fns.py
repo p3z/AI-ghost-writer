@@ -14,10 +14,10 @@ def generic_role(role_title, content_type, theme, audience):
 
 
 def generate_ideas(exclusions):
-    
-    add_exclusions = " The following ideas should be excluded at all costs: " + ', '.join(exclusions) +  ". "
 
     prompt = "You are a prodigy entrepeneur tasked with generating content ideas for ebooks. Your focus should be on selecting topics that are proven to sell well throughout the year regardless of time, what some might call 'evergreen' topics. The topics should be complex enough that others would struggle to imitate them."
+    
+    add_exclusions = " The following ideas should be excluded at all costs: " + ', '.join(exclusions) +  ". "
 
     if( len(exclusions) > 0):
         prompt += add_exclusions
